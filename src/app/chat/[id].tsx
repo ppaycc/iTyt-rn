@@ -1,16 +1,15 @@
 import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedView } from '@/components/themed-view';
+import Chat from '@/components/ui/chat';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import Login from '@/components/ui/login';
 
-export default function HomeScreen() {
+export default function ChatScreen() {
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <Login />
-      </SafeAreaView>
+      {/* <SafeAreaView style={styles.safeArea}> */}
+        <Chat/>
+      {/* </SafeAreaView> */}
     </ThemedView>
   );
 }
@@ -23,11 +22,9 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    paddingVertical: Spacing.three,
-    paddingHorizontal: Spacing.three,
     alignItems: 'center',
     gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+    paddingBottom: BottomTabInset,
     maxWidth: MaxContentWidth,
   },
 });
