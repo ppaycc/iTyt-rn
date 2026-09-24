@@ -1,7 +1,7 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, type TextProps } from 'react-native';
 
 import { ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { makeStyles } from '@/hooks/use-styles';
 
 export type ThemedTitleProps = TextProps & {
     themeColor?: ThemeColor;
@@ -9,7 +9,7 @@ export type ThemedTitleProps = TextProps & {
 };
 
 export function ThemedTitle({ style, text, themeColor, ...rest }: ThemedTitleProps) {
-    const theme = useTheme();
+    const styles = useStyles();
 
     return (
         <Text
@@ -22,12 +22,12 @@ export function ThemedTitle({ style, text, themeColor, ...rest }: ThemedTitlePro
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     text: {
         fontSize: 28,
         lineHeight: 34,
         fontWeight: 600,
-        color: "#111111",
+        color: c.textStrong,
         width: 'auto'
     },
-});
+}));

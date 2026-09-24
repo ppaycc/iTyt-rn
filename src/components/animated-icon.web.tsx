@@ -1,3 +1,4 @@
+import { useTheme } from '@/hooks/use-theme';
 import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Keyframe, Easing } from 'react-native-reanimated';
@@ -55,6 +56,8 @@ const glowKeyframe = new Keyframe({
 });
 
 export function AnimatedIcon() {
+  const theme = useTheme();
+
   return (
     <View style={styles.iconContainer}>
       <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
@@ -62,7 +65,12 @@ export function AnimatedIcon() {
       </Animated.View>
 
       <Animated.View style={styles.background} entering={keyframe.duration(DURATION)}>
-        <div className={classes.expoLogoBackground} />
+        <div
+          className={classes.expoLogoBackground}
+          style={{
+            backgroundImage: `linear-gradient(180deg, ${theme.splashGradientStart}, ${theme.splashGradientEnd})`,
+          }}
+        />
       </Animated.View>
 
       <Animated.View style={styles.imageContainer} entering={logoKeyframe.duration(DURATION)}>

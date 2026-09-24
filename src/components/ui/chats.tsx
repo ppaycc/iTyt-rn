@@ -1,17 +1,22 @@
 import { Spacing } from "@/constants/theme";
+import { makeStyles } from "@/hooks/use-styles";
+import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedIcon } from "../themed-icon";
 import { ThemedTitle } from "../themed-title";
 import { ThemedView } from "../themed-view";
-import CreateChat from "./create-chat";
+import ServiceDialog from "./service-dialog";
 import Dialog from "./dialog";
+import { ThemedText } from "../themed-text";
 
 export default function Chats() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const theme = useTheme();
+    const s = useStyles();
     const [isVissibleCreateDialog, setIsVissibleCreateDialog] = useState(false);
 
     const dialogs = [
@@ -22,15 +27,14 @@ export default function Chats() {
     ];
 
     const handleGoToChat = (id: string) => {
-        console.log('CHAT');
-        router.navigate(`/chat/' + ${id}`);
+        router.push(`/chat/${id}`);
     }
 
     return (
         <ThemedView style={[s.container, { paddingTop: insets.top }]}>
             <View style={s.header}>
                 <ThemedTitle text="Chats" />
-                <ThemedIcon name="person-outline" onPress={() => setIsVissibleCreateDialog(true)} />
+                <ThemedIcon name="settings-outline" onPress={() => setIsVissibleCreateDialog(true)} />
             </View>
 
             {!!dialogs.length && (
@@ -53,25 +57,24 @@ export default function Chats() {
                                 isMe={dialog.isMe}
                             />
                         </TouchableOpacity>
-
                     )}
                 />
             )}
 
             {!dialogs.length && (
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }} onPress={() => setIsVissibleCreateDialog(true)} >
-                    <Text style={{ fontSize: 16 }}>There are no chats yet</Text>
-                    <ThemedIcon name="person-add-outline" size={50} style={{ width: 55, height: 55, backgroundColor: "none" }} color="#111111" />
-                    <Text style={{ fontSize: 16 }}>Tap to create one</Text>
+                    <ThemedText style={{ fontSize: 16 }}>There are no chats yet</ThemedText>
+                    <ThemedIcon name="person-add-outline" size={50} style={{ width: 55, height: 55, backgroundColor: "transparent" }} color={theme.primary} />
+                    <ThemedText style={{ fontSize: 16 }}>Tap to create one</ThemedText>
                 </TouchableOpacity>
             )}
 
-            <CreateChat isVissible={isVissibleCreateDialog} onChange={setIsVissibleCreateDialog}/>
+            <ServiceDialog isVissible={isVissibleCreateDialog} onChange={setIsVissibleCreateDialog}/>
         </ThemedView>
     )
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     container: {
         flex: 1,
         alignItems: 'center',
@@ -84,7 +87,7 @@ const s = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: Spacing.two,
         paddingHorizontal: Spacing.three,
-        borderBottomColor: '#cccccc',
+        borderBottomColor: c.separator,
         borderBottomWidth: 1,
     }
-});
+}));

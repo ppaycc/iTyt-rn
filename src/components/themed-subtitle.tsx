@@ -1,7 +1,7 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, type TextProps } from 'react-native';
 
 import { ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { makeStyles } from '@/hooks/use-styles';
 
 export type ThemedSubtitleProps = TextProps & {
     themeColor?: ThemeColor;
@@ -9,7 +9,7 @@ export type ThemedSubtitleProps = TextProps & {
 };
 
 export function ThemedSubtitle({ style, text, themeColor, ...rest }: ThemedSubtitleProps) {
-    const theme = useTheme();
+    const styles = useStyles();
 
     return (
         <Text
@@ -18,16 +18,16 @@ export function ThemedSubtitle({ style, text, themeColor, ...rest }: ThemedSubti
                 style,
             ]}
             {...rest}
-        ><Text style={styles.text}>{text}</Text></Text>
+        >{text}</Text>
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     text: {
         fontSize: 14,
         lineHeight: 18,
         fontWeight: 500,
-        color: "#5E5E62",
+        color: c.textMuted,
         width: "100%",
     },
-});
+}));

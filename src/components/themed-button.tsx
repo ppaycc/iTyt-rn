@@ -1,22 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, type TouchableOpacityProps } from 'react-native';
+import { Text, TouchableOpacity, type TouchableOpacityProps } from 'react-native';
 
 import { ThemeColor } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { makeStyles } from '@/hooks/use-styles';
 
 export type ThemedButtonProps = TouchableOpacityProps & {
-    type?: 'primary' | 'outlined' | 'secondary' | 'inverted';
+    type?: 'primary';
     themeColor?: ThemeColor;
     text: string;
 };
 
 export function ThemedButton({ style, text, type = 'primary', themeColor, ...rest }: ThemedButtonProps) {
-    const theme = useTheme();
+    const styles = useStyles();
 
     return (
         <TouchableOpacity
             style={[
                 styles.btn,
-                // { color: theme[themeColor ?? 'text'] },
                 type === 'primary' && styles.primary,
                 style,
             ]}
@@ -25,7 +24,7 @@ export function ThemedButton({ style, text, type = 'primary', themeColor, ...res
     );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     btn: {
         height: 52,
         width: '100%',
@@ -37,11 +36,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 20,
         fontWeight: 500,
-        color: '#fff',
+        color: c.onPrimary,
         textAlign: 'center',
     },
     primary: {
-        backgroundColor: '#111111',
-        color: '#fff',
+        backgroundColor: c.primary,
+        color: c.onPrimary,
     }
-});
+}));

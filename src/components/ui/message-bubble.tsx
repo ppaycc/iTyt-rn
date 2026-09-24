@@ -1,5 +1,5 @@
 import { formatChatDate } from "@/helpers/format-date";
-import { StyleSheet } from "react-native";
+import { makeStyles } from "@/hooks/use-styles";
 import { ThemedText } from "../themed-text";
 import { ThemedView } from "../themed-view";
 import { ThemedIcon } from "../themed-icon";
@@ -12,6 +12,8 @@ export type DialogProps = {
 };
 
 export default function MessageBubble({ message, date, isMe, read }: DialogProps) {
+    const s = useStyles();
+
     return (
         // <TouchableOpacity style={s.top}>
         <ThemedView style={[s.bubble, !!isMe && s.send]}>
@@ -29,30 +31,30 @@ export default function MessageBubble({ message, date, isMe, read }: DialogProps
     )
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     bubble: {
         maxWidth: '80%',
         margin: 10,
         paddingVertical: 12,
         paddingHorizontal: 16,
-        backgroundColor: '#EEEEEE',
+        backgroundColor: c.backgroundSubtle,
         borderRadius: 18,
         marginTop: 5,
         alignSelf: 'flex-start',
     },
     send: {
-        backgroundColor: '#111111',
+        backgroundColor: c.primary,
         alignSelf: 'flex-end',
     },
     message: {
         fontSize: 16,
     },
     sendMessage: {
-        color: '#fff',
+        color: c.onPrimary,
     },
     date: {
         fontSize: 12,
-        color: '#ccc',
+        color: c.onPrimaryMuted,
     },
     checkIcon: {
         width: 15,
@@ -62,4 +64,4 @@ const s = StyleSheet.create({
         right: 7,
         bottom: 7,
     }
-});
+}));

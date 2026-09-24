@@ -1,36 +1,43 @@
 import { Spacing } from "@/constants/theme";
+import { makeStyles } from "@/hooks/use-styles";
+import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { FlatList, Keyboard, KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Keyboard, KeyboardAvoidingView, NativeScrollEvent, NativeSyntheticEvent, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedIcon } from "../themed-icon";
 import { ThemedInput } from "../themed-input";
 import { ThemedTitle } from "../themed-title";
 import MessageBubble from "./message-bubble";
+import { ThemedText } from "../themed-text";
+import ChatConnectionStatus from "./chat-connection-status";
 
 export default function Chat() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const theme = useTheme();
+    const s = useStyles();
 
+    // Список inverted, поэтому данные идут от новых к старым: dialogs[0] — самое свежее.
     const dialogs = [
-        { id: '1', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: false, read: false },
-        { id: '2', message: 'Love yousds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '3', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: false, read: false },
-        { id: '5', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds asdasd asdas asd', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '4', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '6', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '41552', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '4153', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '1141', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '44', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '4615', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '41516', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '46', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '4156', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '416', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '41456', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
-        { id: '465655', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
         { id: '417', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: true },
+        { id: '465655', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '41456', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '416', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '4156', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '46', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '41516', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '4615', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '44', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '1141', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '4153', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '41552', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '6', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '4', message: 'Love yousds sdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '5', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds asdasd asdas asd', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '3', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: false, read: false },
+        { id: '2', message: 'Love yousds', date: new Date(2026, 8, 18, 14, 52), isMe: true, read: false },
+        { id: '1', message: 'Love yousds sdsd sdsds dsdsd ssds dsds dsds dsds dsdsd sdsds', date: new Date(2026, 8, 18, 14, 52), isMe: false, read: false },
     ];
 
     const onBack = () => {
@@ -40,11 +47,11 @@ export default function Chat() {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
-        const show = Keyboard.addListener("keyboardDidShow", () => {
+        const show = Keyboard.addListener("keyboardWillShow", () => {
             setKeyboardVisible(true);
         });
 
-        const hide = Keyboard.addListener("keyboardDidHide", () => {
+        const hide = Keyboard.addListener("keyboardWillHide", () => {
             setKeyboardVisible(false);
         });
 
@@ -55,47 +62,14 @@ export default function Chat() {
     }, []);
 
     const listRef = useRef<FlatList>(null);
-    const wasAtBottomRef = useRef(true);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const handleScroll = (event: any) => {
-        const {
-            contentOffset,
-            contentSize,
-            layoutMeasurement,
-        } = event.nativeEvent;
-
-        const distanceFromBottom =
-            contentSize.height -
-            (contentOffset.y + layoutMeasurement.height);
-
-        wasAtBottomRef.current = distanceFromBottom <= 50;
-        setIsScrolled(distanceFromBottom >= 50);
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        setIsScrolled(event.nativeEvent.contentOffset.y > 50);
     };
 
-    useEffect(() => {
-        const subscription = Keyboard.addListener(
-            "keyboardDidShow",
-            () => {
-                if (!wasAtBottomRef.current) {
-                    return;
-                }
-
-                scrollDown();
-            }
-        );
-
-        return () => subscription.remove();
-    }, []);
-
     const scrollDown = () => {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                listRef.current?.scrollToEnd({
-                    animated: true,
-                });
-            });
-        });
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
 
     return (
@@ -105,7 +79,7 @@ export default function Chat() {
             keyboardVerticalOffset={0}
         >
             <View style={s.header}>
-                <ThemedIcon onPress={onBack} color="#000" style={s.backIcon} name="chevron-back" />
+                <ThemedIcon onPress={onBack} color={theme.text} style={s.backIcon} name="chevron-back" />
                 <View style={s.usernameContainer}>
                     <ThemedTitle style={s.username} numberOfLines={1} text="Username" />
                     <Text style={s.userStatus}>Online</Text>
@@ -113,15 +87,23 @@ export default function Chat() {
                 <ThemedIcon name="person-outline" />
             </View>
 
+            <ChatConnectionStatus/>
+
             <FlatList
                 ref={listRef}
+                inverted
                 style={s.list}
                 data={dialogs}
                 keyExtractor={dialog => dialog.id}
                 contentContainerStyle={{
-                    paddingBottom: 16,
+                    paddingTop: 16,
                 }}
                 onScroll={handleScroll}
+                scrollEventThrottle={16}
+                maintainVisibleContentPosition={{
+                    minIndexForVisible: 0,
+                    autoscrollToTopThreshold: 120,
+                }}
                 renderItem={({ item: dialog }) => (
                     <MessageBubble
                         message={dialog.message}
@@ -133,7 +115,7 @@ export default function Chat() {
             />
             {isScrolled && (
                 <View style={[s.floatButton, { bottom: insets.bottom + Spacing.two + 80, right: Spacing.three }]}>
-                    <ThemedIcon style={{ backgroundColor: "none" }} onPress={scrollDown} name={'chevron-down-outline'} />
+                    <ThemedIcon style={{ backgroundColor: "transparent" }} onPress={scrollDown} name={'chevron-down-outline'} />
                     <View style={s.badge}></View>
                 </View>
             )}
@@ -145,22 +127,23 @@ export default function Chat() {
     )
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     userStatus: {
         textAlign: 'center',
         fontSize: 12,
+        color: c.text,
     },
     floatButton: {
         position: 'absolute',
         right: Spacing.three,
-        backgroundColor: "#5E5E62",
+        backgroundColor: c.backgroundFloating,
         borderRadius: 100,
     },
     badge: {
         height: 10,
         width: 10,
         borderRadius: 100,
-        backgroundColor: "#00ff00",
+        backgroundColor: c.online,
         position: "absolute",
         top: 0,
         right: 0,
@@ -172,7 +155,7 @@ const s = StyleSheet.create({
     list: {
         flex: 1,
         alignSelf: 'stretch',
-        backgroundColor: '#F9F9F9',
+        backgroundColor: c.backgroundSurface,
     },
     username: {
         minWidth: 0,
@@ -185,7 +168,7 @@ const s = StyleSheet.create({
         height: 41,
         flex: 1,
         minWidth: 0,
-        backgroundColor: "#EEEEEE",
+        backgroundColor: c.backgroundSubtle,
     },
     bottom: {
         width: '100%',
@@ -194,7 +177,7 @@ const s = StyleSheet.create({
         paddingVertical: Spacing.two,
         paddingHorizontal: Spacing.three,
         gap: Spacing.two,
-        backgroundColor: "#ffffff"
+        backgroundColor: c.background
     },
     container: {
         flex: 1,
@@ -204,7 +187,7 @@ const s = StyleSheet.create({
     backIcon: {
         width: 20,
         minWidth: 20,
-        backgroundColor: "#fff"
+        backgroundColor: c.background
     },
     header: {
         flexDirection: 'row',
@@ -214,8 +197,8 @@ const s = StyleSheet.create({
         paddingVertical: Spacing.two,
         gap: Spacing.two,
         paddingHorizontal: Spacing.three,
-        borderBottomColor: '#cccccc',
+        borderBottomColor: c.separator,
         borderBottomWidth: 1,
         // boxShadow: "0 1px 2px 0 #000000"
     }
-});
+}));

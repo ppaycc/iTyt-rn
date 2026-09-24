@@ -1,11 +1,14 @@
+import { makeStyles } from '@/hooks/use-styles';
 import * as Clipboard from 'expo-clipboard';
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import Modal from 'react-native-modal';
 import { ThemedIcon } from "../themed-icon";
 import { ThemedInput } from "../themed-input";
 import { ThemedTitle } from "../themed-title";
 
-export default function CreateChat({ isVissible, onChange }: { isVissible: boolean, onChange: (v: boolean) => void }) {
+export default function ServiceDialog({ isVissible, onChange }: { isVissible: boolean, onChange: (v: boolean) => void }) {
+    const s = useStyles();
+
     const copy = () => {
         Clipboard.setStringAsync('test');
     }
@@ -21,7 +24,7 @@ export default function CreateChat({ isVissible, onChange }: { isVissible: boole
             style={{ margin: 0, justifyContent: 'flex-end' }}
         >
             <View style={s.container}>
-                <ThemedTitle text="Create chat" />
+                <ThemedTitle text="Service" />
                 <View style={s.row}>
                     <ThemedInput placeholder="Input your friend code here" style={s.input} />
                     <ThemedIcon name="arrow-up" />
@@ -30,18 +33,25 @@ export default function CreateChat({ isVissible, onChange }: { isVissible: boole
                     <Text style={s.idText}>Personal id</Text>
                     <ThemedIcon name="copy-outline" onPress={copy} />
                 </View>
+                <TouchableOpacity style={s.row}>
+                    <Text style={[s.idText, s.dangerous]}>Logout</Text>
+                    <ThemedIcon color={'#ff0000'} name="log-out-outline" onPress={copy} />
+                </TouchableOpacity>
             </View>
         </Modal>
     )
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((c) => ({
     input: {
         flex: 1,
         minWidth: 0,
         width: "auto",
-        borderColor: "#111111",
+        borderColor: c.borderStrong,
         height: 41,
+    },
+    dangerous: {
+        color: c.dangerous,
     },
     row: {
         flexDirection: 'row',
@@ -52,11 +62,12 @@ const s = StyleSheet.create({
     },
     idText: {
         fontSize: 18,
+        color: c.text,
     },
     container: {
         width: '100%',
         alignSelf: 'stretch',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: c.backgroundSheet,
         paddingTop: 40,
         paddingBottom: 30,
         paddingHorizontal: 15,
@@ -64,14 +75,4 @@ const s = StyleSheet.create({
         borderTopRightRadius: 30,
         gap: 20,
     },
-    content: {
-        gap: 20,
-        alignSelf: 'stretch',
-        backgroundColor: '#f5f5f5',
-        paddingTop: 40,
-        paddingBottom: 50,
-        paddingHorizontal: 30,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-    }
-});
+}));
